@@ -1,14 +1,14 @@
 import tkinter as tk
 import tkinter.font as font
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import os
 
 window = tk.Tk()
 window.title("Python IDE - Untitled")
 window.iconbitmap("python_icon.ico")
 
 buttonFont = font.Font(weight="bold", size=10)
-textBoxFont = font.Font(family="Monaco", size=12)
-terminalFont = font.Font(family="Monaco", size=10)
+textBoxFont = font.Font(family="Courier New", size=12)
 
 
 frame1 = tk.Frame(master=window,
@@ -78,9 +78,14 @@ def handle_click_run():
     handle_click_save()
     filepath = window.title()[13:len(window.title())]
     if filepath != "Untitled":
-        command = 'cmd /c "py {}"' .format(filepath)
-        print(command)
-        # os.system(command)
+        # split path and filename
+        parts = filepath.split('/')
+        filename = parts[-1]
+        filepath = filepath[:-len(filename)]
+        print(filepath)
+
+        command = 'start cmd.exe /k "cd {}&&py {}"' .format(filepath, filename)
+        os.system(command)
 
 
 runButton = tk.Button(text="Run",
@@ -113,11 +118,6 @@ textBox = tk.Text(master=frame2,
                   height=24,
                   width=60)
 
-terminal = tk.Text(master=frame2,
-                   font=terminalFont,
-                   height=8,
-                   width=60)
-
 
 frame1.pack(fill=tk.X, side=tk.TOP)
 openButton.place(x=0, y=0)
@@ -126,7 +126,6 @@ runButton.place(x=120, y=0)
 closeButton.place(x=180, y=0)
 
 textBox.pack(fill=tk.BOTH, expand=True)
-terminal.pack(fill=tk.BOTH, expand=True)
 frame2.pack(fill=tk.BOTH, expand=True)
 
 window.update()
